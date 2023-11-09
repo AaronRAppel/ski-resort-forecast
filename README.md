@@ -72,3 +72,4 @@ I added component tests for the `<ConditionsTable />` and function tests for `ge
 ### Things Left Out
 - Authentication/User Management
 - Routing
+- Theme

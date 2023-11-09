@@ -27,7 +27,8 @@ export type Properties = {
   periods: Period[]
 }
 
-export type Coordinates = {
+export type ResortArgs = {
+  id: number
   x: number
   y: number
 }

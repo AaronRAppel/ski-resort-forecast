@@ -16,5 +16,6 @@ export const resortCoordinates: ResortCoordinates[] = [
   { id: 2, name: 'Arapahoe Basin', x: 32, y: 59 },
   { id: 3, name: 'Big Bear', x: 78, y: 78 },
   { id: 4, name: 'Copper Mountain', x: 21, y: 53 },
-  { id: 6, name: 'Winter Park', x: 27, y: 71 },
+  { id: 5, name: 'Winter Park', x: 27, y: 71 },
+  { id: 6, name: 'Error Mountain', x: 234, y: 432 },
 ]

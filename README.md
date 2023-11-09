@@ -59,7 +59,11 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 ### Responsive Design
  Both the graph and the table are responsive. When the graph gets below a certain size, I update the date labels to only show the day as opposed to showing the date in YYYY-MM-DD format. The table is just side-scrollable, which comes by default with MUI. If I had more time, I would update the table rows to display the data in a more condensed way when on narrower screens.
 
+The app is wrapped `<React.StrictMode>`, so in development we render components twice which causes us to hit the API twice on the initial call. This will not happen in production, and if you would like to change it here, remove `<React.StrictMode>` in `src/index.tsx`.
 
+Error handling: There is an error boundary wrapping the app, and I added basic error handling and retry functionality so that when a fetch fails, the user is notified and they have the option to retry the call. There is a fake resort with invalid coordinates at the bottom of the dropdown which you can use to test this functionality. (The endpoints also fail with 500s sporadically)
+
+We only fetch data once for each resort. It would be simple to add a update data button by applying the retry logic, but I chose not to do that for now. 
 
 ## README requirements
 Provide a README.md file that:

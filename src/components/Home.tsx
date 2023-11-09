@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { TemperatureGraph } from './TemperatureGraph'
 import { ConditionsTable } from './ConditionsTable'
-import { CircularProgress, MenuItem, Select, Typography } from '@mui/material'
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  MenuItem,
+  Select,
+  Snackbar,
+  Typography,
+} from '@mui/material'
 import { useForecastData } from '../redux/forecastSlice'
 import styled from 'styled-components'
 import { ResortCoordinates, resortCoordinates } from '../misc/resortCoordinates'
+import { useWindowDimensions } from '../hooks'
 
 export const Home: React.FC = () => {
   const [selectedResortId, setSelectedResortId] = useState(1)
@@ -15,16 +24,46 @@ export const Home: React.FC = () => {
   ) as ResortCoordinates
 
   useEffect(() => {
-    fetchForecast({ x: selectedResort.x, y: selectedResort.y })
-  }, [fetchForecast, forecastState.properties, selectedResort])
+    if (
+      forecastState.status !== 'loading' &&
+      forecastState.status !== 'failed' &&
+      !forecastState.resorts[selectedResortId]
+    )
+      fetchForecast({
+        id: selectedResort.id,
+        x: selectedResort.x,
+        y: selectedResort.y,
+      })
+  }, [fetchForecast, forecastState, selectedResort, selectedResortId])
+
+  const [showError, setShowError] = useState(false)
+  const hideError = () => setShowError(false)
+
+  useEffect(() => {
+    if (forecastState.status === 'failed') setShowError(true)
+  }, [forecastState.status])
+
+  const retryFetch = () =>
+    fetchForecast({
+      id: selectedResort.id,
+      x: selectedResort.x,
+      y: selectedResort.y,
+    })
+
+  const { width: windowWidth } = useWindowDimensions()
 
   return (
     <Page>
+      <Snackbar open={showError} autoHideDuration={6000} onClose={hideError}>
+        <Alert onClose={hideError} severity="error" sx={{ width: '100%' }}>
+          An error occurred. Please try again.
+        </Alert>
+      </Snackbar>
       <Typography variant="h2" gutterBottom>
         {selectedResort?.name} Conditions
       </Typography>
 
-      <DropdownContainer>
+      <DropdownContainer $small={windowWidth < 1200}>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -38,16 +77,27 @@ export const Home: React.FC = () => {
             </MenuItem>
           ))}
         </Select>
+        {forecastState.status === 'failed' && (
+          <>
+            <br />
+            <br />
+            <Button onClick={retryFetch}>Retry Fetch</Button>
+          </>
+        )}
       </DropdownContainer>
 
-      {forecastState.properties?.periods ? (
+      {forecastState.resorts[selectedResortId]?.periods && (
         <Content>
-          <TemperatureGraph data={forecastState.properties.periods} />
-          <ConditionsTable data={forecastState.properties.periods} />
+          <TemperatureGraph
+            data={forecastState.resorts[selectedResortId].periods}
+          />
+          <ConditionsTable
+            data={forecastState.resorts[selectedResortId].periods}
+          />
         </Content>
-      ) : (
-        <CircularProgress />
       )}
+
+      {forecastState.status === 'loading' && <CircularProgress />}
     </Page>
   )
 }
@@ -61,8 +111,9 @@ const Content = styled.div`
   text-align: left;
 `
 
-const DropdownContainer = styled.div`
-  position: absolute;
-  top: 36px;
-  right: 72px;
+const DropdownContainer = styled.div<{ $small: boolean }>`
+  position: ${p => (p.$small ? 'relative' : 'absolute')};
+  margin-bottom: ${p => (p.$small ? 72 : 0)}px;
+  top: ${p => (p.$small ? 'auto' : '36px')};
+  right: ${p => (p.$small ? 'auto' : '72px')};
 `

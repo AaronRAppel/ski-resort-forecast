@@ -12,41 +12,10 @@ import {
 } from '@mui/material'
 import { Period } from '../types'
 import styled from 'styled-components'
-import moment from 'moment'
+import { Direction, getSortedData, SortBy } from '../utils/sorting'
 
 interface Props {
   data: Period[]
-}
-
-type SortBy = 'date' | 'temp'
-
-type Direction = 'asc' | 'desc'
-
-const getSortedData = (
-  data: Period[],
-  sortBy: SortBy,
-  direction: Direction
-): Period[] => {
-  const sortedData = [...data]
-
-  switch (sortBy) {
-    case 'date':
-      return sortedData.sort((a, b) => {
-        const dateA = moment(a.startTime)
-        const dateB = moment(b.startTime)
-
-        if (dateA > dateB) return direction === 'asc' ? -1 : 1
-        else return direction === 'asc' ? 1 : -1
-      })
-    case 'temp':
-      return sortedData.sort((a, b) =>
-        direction === 'asc'
-          ? b.temperature - a.temperature
-          : a.temperature - b.temperature
-      )
-    default:
-      return sortedData
-  }
 }
 
 export const ConditionsTable: React.FC<Props> = ({ data }) => {

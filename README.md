@@ -24,6 +24,8 @@ Axios: I like using Axios for API calls because it does an automatic data transf
 
 Prettier: I generally use Prettier for auto-formatting. I've found this speeds up development and enforces consistent style, which becomes increasingly important as you add more developers to a project.
 
+Moment: I'm using moment for date comparison/manipulation because it's much simpler to use than JS Date.
+
 ## Available Scripts
 
 In the project directory, you can run:

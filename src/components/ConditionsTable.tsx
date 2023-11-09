@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Paper,
   Table,
@@ -12,12 +12,64 @@ import {
 } from '@mui/material'
 import { Period } from '../types'
 import styled from 'styled-components'
+import moment from 'moment'
 
 interface Props {
   data: Period[]
 }
 
+type SortBy = 'date' | 'temp'
+
+type Direction = 'asc' | 'desc'
+
+const getSortedData = (
+  data: Period[],
+  sortBy: SortBy,
+  direction: Direction
+): Period[] => {
+  const sortedData = [...data]
+
+  switch (sortBy) {
+    case 'date':
+      return sortedData.sort((a, b) => {
+        const dateA = moment(a.startTime)
+        const dateB = moment(b.startTime)
+
+        if (dateA > dateB) return direction === 'asc' ? -1 : 1
+        else return direction === 'asc' ? 1 : -1
+      })
+    case 'temp':
+      return sortedData.sort((a, b) =>
+        direction === 'asc'
+          ? b.temperature - a.temperature
+          : a.temperature - b.temperature
+      )
+    default:
+      return sortedData
+  }
+}
+
 export const ConditionsTable: React.FC<Props> = ({ data }) => {
+  const [sortConfig, setSortConfig] = useState<{
+    sortBy: SortBy
+    direction: Direction
+  }>({ sortBy: 'date', direction: 'desc' })
+
+  const updateSortConfig = (sortBy: SortBy) => {
+    if (sortBy === sortConfig.sortBy)
+      setSortConfig(cur => ({
+        ...cur,
+        direction: cur.direction === 'asc' ? 'desc' : 'asc',
+      }))
+    else setSortConfig({ sortBy, direction: 'desc' })
+  }
+
+  const sortedData = getSortedData(
+    data,
+    sortConfig.sortBy,
+    sortConfig.direction
+  )
+
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
@@ -28,10 +80,21 @@ export const ConditionsTable: React.FC<Props> = ({ data }) => {
           <TableHead>
             <TableRow>
               <TableCell />
-              <TableCell>Time Period</TableCell>
+              <TableCell>
+                Time Period
+                <TableSortLabel
+                  active={sortConfig.sortBy === 'date'}
+                  direction={sortConfig.direction}
+                  onClick={() => updateSortConfig('date')}
+                />
+              </TableCell>
               <TableCell>
                 Temperature (F&deg;)
-                <TableSortLabel active={true} direction="desc" />
+                <TableSortLabel
+                  active={sortConfig.sortBy === 'temp'}
+                  direction={sortConfig.direction}
+                  onClick={() => updateSortConfig('temp')}
+                />
               </TableCell>
               <TableCell>Wind Speed</TableCell>
               <TableCell>Wind Direction</TableCell>
@@ -39,7 +102,7 @@ export const ConditionsTable: React.FC<Props> = ({ data }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map(row => (
+            {sortedData.map(row => (
               <TableRow
                 key={row.name}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

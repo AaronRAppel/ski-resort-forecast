@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { Properties } from '../types'
+import { Coordinates, Properties } from '../types'
 import axios from 'axios'
 import { useAppDispatch, useAppSelector } from './hooks'
 
-const fetchForecastThunk = createAsyncThunk<Properties>(
+const fetchForecastThunk = createAsyncThunk<Properties, Coordinates>(
   'forecast/fetchForecast',
-  async () => {
+  async (coordinates: Coordinates) => {
     const response = await axios.get(
-      'https://api.weather.gov/gridpoints/BOU/32,59/forecast'
+      `https://api.weather.gov/gridpoints/BOU/${coordinates.x},${coordinates.y}/forecast`
     )
 
     return response.data.properties
@@ -39,7 +39,11 @@ export const useForecastData = () => {
   const dispatch = useAppDispatch()
   const forecastState = useAppSelector(state => state.forecast)
 
-  return { forecastState, fetchForecast: () => dispatch(fetchForecastThunk()) }
+  return {
+    forecastState,
+    fetchForecast: (coordinates: Coordinates) =>
+      dispatch(fetchForecastThunk(coordinates)),
+  }
 }
 
 export default forecastSlice.reducer

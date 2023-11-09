@@ -12,23 +12,12 @@ import { Period } from '../types'
 import { useWindowDimensions } from '../hooks'
 import { GraphTooltip } from './GraphTooltip'
 import { Typography } from '@mui/material'
+import moment from 'moment'
 
 interface Props {
   data: Period[]
 }
 
-const getDayString = (day: number) => {
-  switch (day) {
-    case 1:
-      return '1st'
-    case 2:
-      return '2nd'
-    case 3:
-      return '3rd'
-    default:
-      return `${day}th`
-  }
-}
 export const TemperatureGraph: React.FC<Props> = ({ data }) => {
   const { width: windowWidth } = useWindowDimensions()
 
@@ -41,10 +30,13 @@ export const TemperatureGraph: React.FC<Props> = ({ data }) => {
       High?: number
     }[]
   >((acc, cur) => {
-    const [date, time] = cur.endTime.split('T') // These dates use a consistent format, so we can assume these values will be correct
-    const dayNum = parseInt(date.split('-')[2])
-    const day = getDayString(dayNum)
-    const hour = time.split(':')[0]
+    const dateTime = moment(cur.endTime)
+    const date = dateTime.format('YYYY-MM-DD')
+    const day = dateTime.format('DD')
+
+    // This API returns a time range, so we're using the first hour given in the range here
+    const stringTime = cur.endTime.split('T')[1]
+    const hour = stringTime.split(':')[0]
 
     if (acc.length > 0 && acc[acc.length - 1].date === date) {
       acc[acc.length - 1][hour === '06' ? 'Low' : 'High'] = cur.temperature

@@ -26,3 +26,8 @@ export type Properties = {
   elevation: UnitValue
   periods: Period[]
 }
+
+export type Coordinates = {
+  x: number
+  y: number
+}

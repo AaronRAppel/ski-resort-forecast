@@ -53,6 +53,14 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
+
+## Notes
+
+### Responsive Design
+ Both the graph and the table are responsive. When the graph gets below a certain size, I update the date labels to only show the day as opposed to showing the date in YYYY-MM-DD format. The table is just side-scrollable, which comes by default with MUI. If I had more time, I would update the table rows to display the data in a more condensed way when on narrower screens.
+
+
+
 ## README requirements
 Provide a README.md file that:
 - Explains the decisions you made and why.

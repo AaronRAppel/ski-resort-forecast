@@ -12,9 +12,6 @@ Then, run `yarn start` to run the app locally.
 
 Run `yarn test` to run all tests.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
 ### Building the app
 
 Run `yarn build`
@@ -37,11 +34,11 @@ I chose Redux because it's flexible, consistent, easy to test, and it plays well
 
 I'm using Material UI for a component library because it is simple yet flexible, and saves me the time of creating custom UI components.
 
-I chose styled-components because it make it simple to use types, it's composable, and makes the JSX cleaner.
+I decided to use styled-components because it make it simple to use types, it's composable, and it makes the JSX cleaner.
 
 ### Additional Dependencies
 
-Recharts: I chose this library because it's simple, quick, and build with D3 (which I would use for charts/graphs that require more customization). It also has some basic accessibility features. For instance, you can tab to the graph in this app and navigate through points with the arrow keys.
+Recharts: I chose this library because it's simple, quick, and built with D3 (which I would use for charts/graphs that require more customization). It also has some basic accessibility features. For instance, you can tab to the graph in this app and navigate through points with the arrow keys.
 
 Axios: I like using Axios for API calls because it does an automatic data transformation to JSON, it helps with error handling, and it has polyfills for older browsers.
 
